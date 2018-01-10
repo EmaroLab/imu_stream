@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.emarolab.carfi.imustream">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.emarolab.carfi.imustream.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="com.emarolab.carfi.imustream.DataLayerListenerService"
+            android:stopWithTask="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/IMU"/>
+                <!-- <action android:name="com.google.android.gms.wearable.BIND_LISTENER" /> -->
+            </intent-filter>
+        </service>
+
+        <activity android:name="com.emarolab.carfi.imustream.MqttSettingActivity" />
+        <activity android:name="com.emarolab.carfi.imustream.PcComunicationActivity"></activity>
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+    </application>
+
+</manifest>

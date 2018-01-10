@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.emarolab.carfi.imustream"
+        minSdkVersion 23
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.google.android.support:wearable:2.1.0'
+    implementation 'com.google.android.gms:play-services-wearable:11.6.2'
+    implementation 'com.android.support:percent:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:wear:27.0.0'
+    compileOnly 'com.google.android.wearable:wearable:2.1.0'
+    provided 'com.google.android.wearable:wearable:2.1.0'
+}
