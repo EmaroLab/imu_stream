@@ -1,5 +1,5 @@
-# imu_stream
-Set of Android applications (mobile and wear) to stream imu data from smartwatch to pc.
+# IMU Stream
+Set of Android applications (mobile and wear) to stream IMU data from smartwatch to an MQTT broker.
 # How to install
 **mobile app** 
 
