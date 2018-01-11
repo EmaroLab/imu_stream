@@ -1,6 +1,6 @@
 # imu_stream
 Set of Android applications (mobile and wear) to stream imu data from smartwatch to pc.
-# Hot to install
+# How to install
 **mobile app** 
 
 Download on the smartphone, from the git folder "release", the file "mobile-release.apk". Tap on the downloaded file and follow on screen instruction to complete the installation.
