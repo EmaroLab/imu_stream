@@ -20,7 +20,8 @@ There exist different approaches to install the app into your smartwatch, we des
 1. Press **Browse** and select the folder were the apk was downloaded, the installation process will start automatically.
 
 **NOTE** 
-1. On both devices, smartphone and smartwatch, should be enabled the usb debugging option from the developer options menu;
+1. On the smartphone the _unknown source_ option, from _Menu>Settings>Security_, should be enabled;  
+1. On the smartwatch the _ADB debugging_ option, from _Menu>Settings>Developer_, should be enabled;
 1. If you experience problem with _Android Wear 2.0 APK Installer.exe_ check your antivirus.
 
 ## How to use _imu_stream_
