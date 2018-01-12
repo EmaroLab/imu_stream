@@ -23,6 +23,16 @@ There exist different approaches to install the app into your smartwatch, we des
 1. On both devices, smartphone and smartwatch, should be enabled the usb debugging option from the developer options menu;
 1. If you experience problem with _Android Wear 2.0 APK Installer.exe_ check your antivirus.
 
+## How to use _imu_stream_
+
+1. Using [Android Wear](https://play.google.com/store/apps/details?id=com.google.android.wearable.app&hl=it) app pair your smartwatch to your smartphone;
+1. Open the app on the smartwatch and press start, IMU data stream will appear on the monitor;
+1. Open the app on the smartphone press **MQTT comunication**;
+1. Insert MQTT broker info, default port is 1883;
+1. Press **start**;
+1. Press **pause** and **resume** to pause and resume the communication with the MQTT broker.
+
+
 ## Author 
 
 [Alessandro Carfì](https://github.com/ACarfi) e-mail: alessandro.carfi@dibris.unige.it
