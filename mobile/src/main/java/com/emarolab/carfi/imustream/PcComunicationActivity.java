@@ -17,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.util.ArrayList;
 import java.util.Timer;
 
 public class PcComunicationActivity extends AppCompatActivity {
@@ -64,11 +65,16 @@ public class PcComunicationActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    float[] acc = bundle.getFloatArray("acceleration");
-                    float[] vel = bundle.getFloatArray("velocity");
-                    String string = "acc;" + acc[0] + ";" + acc[1] + ";" + acc[2] + ";gyro;" + vel[0] + ";" + vel[0] + ";" + vel[2];
-                    imuVisualization(acc,vel);
-                    mqttHelper.onDataReceived(string);
+                    ArrayList<String> deviceList = intent.getStringArrayListExtra("deviceList");
+                    if (deviceList != null) {
+                        for (String device : deviceList) {
+                            float[] acc = bundle.getFloatArray(device + "/acceleration");
+                            float[] vel = bundle.getFloatArray(device + "/velocity");
+                            String string = "acc;" + acc[0] + ";" + acc[1] + ";" + acc[2] + ";gyro;" + vel[0] + ";" + vel[0] + ";" + vel[2];
+                            imuVisualization(acc, vel);
+                            mqttHelper.onDataReceived(string);
+                        }
+                    }
                     connectionCheck();
                 }
             }

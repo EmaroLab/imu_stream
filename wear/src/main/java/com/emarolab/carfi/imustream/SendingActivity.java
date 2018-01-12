@@ -34,6 +34,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
     private Sensor senAccelerometer, senGyroscope;
     private Timer myTimer;
 
+    private String deviceName;
     private long lastUpdate = 0;
 
     private float precision = 1000;
@@ -54,14 +55,14 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         setAmbientEnabled();
 
         Intent intent = getIntent();
-        String deviceName = intent.getStringExtra(MainActivity.deviceNamePath);
+        deviceName = intent.getStringExtra(MainActivity.deviceNamePath);
 
         TextView TextDevName;
         TextDevName = (TextView) findViewById(R.id.deviceName);
         TextDevName.setText(deviceName);
 
-        accMsg.setTopic("sensors/accelerometer");
-        gyroMsg.setTopic("sensors/gyroscope");
+        accMsg.setTopic(deviceName + "/accelerometer");
+        gyroMsg.setTopic(deviceName + "/gyroscope");
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -123,7 +124,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
         map.putFloatArray(msg_acc.getTopic(), msg_acc.getData());
         map.putFloatArray(msg_gyro.getTopic(), msg_gyro.getData());
-        map.putLong("sensors/time", System.currentTimeMillis());
+        map.putLong(deviceName + "/time", System.currentTimeMillis());
         PutDataRequest request = putRequest.asPutDataRequest();
         request.setUrgent();
         Wearable.DataApi.putDataItem(mGoogleApiClient, request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
