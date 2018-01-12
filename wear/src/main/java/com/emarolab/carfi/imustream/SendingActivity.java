@@ -53,6 +53,13 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         // Enables Always-on
         setAmbientEnabled();
 
+        Intent intent = getIntent();
+        String deviceName = intent.getStringExtra(MainActivity.deviceNamePath);
+
+        TextView TextDevName;
+        TextDevName = (TextView) findViewById(R.id.deviceName);
+        TextDevName.setText(deviceName);
+
         accMsg.setTopic("sensors/accelerometer");
         gyroMsg.setTopic("sensors/gyroscope");
 
@@ -67,6 +74,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
         dataAcc = (TextView) findViewById(R.id.acc);
         dataGyro = (TextView) findViewById(R.id.gyro);
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
