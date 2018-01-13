@@ -131,9 +131,9 @@ public class MqttHelper {
     }
 
 
-    public void onDataReceived(String msg) {
+    public void onDataReceived(String msg, String device) {
         if(publishPermission) {
-            Publisher.setMsg(msg);
+            Publisher.setMsg(msg, device);
         }
     }
 

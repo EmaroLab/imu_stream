@@ -72,7 +72,7 @@ public class PcComunicationActivity extends AppCompatActivity {
                             float[] vel = bundle.getFloatArray(device + "/velocity");
                             String string = "acc;" + acc[0] + ";" + acc[1] + ";" + acc[2] + ";gyro;" + vel[0] + ";" + vel[0] + ";" + vel[2];
                             imuVisualization(acc, vel);
-                            mqttHelper.onDataReceived(string);
+                            mqttHelper.onDataReceived(string, device);
                         }
                     }
                     connectionCheck();

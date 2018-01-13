@@ -9,11 +9,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class MqttPublisher implements Runnable {
 
     private MqttAndroidClient mqttAndroidClient;
-    private String msg = "casa";
+    private String msg = "none";
+    private String device = "none";
     private boolean published = false;
 
-    public void setMsg(final String msg) {
+    public void setMsg(final String msg, final String device) {
         this.msg = msg;
+        this.device = device;
         published = true;
     }
 
@@ -37,7 +39,7 @@ public class MqttPublisher implements Runnable {
                 mqttMessage.setPayload(m.getBytes());
 
                 try {
-                    mqttAndroidClient.publish("sensors/imu", mqttMessage);
+                    mqttAndroidClient.publish(device + "/imu", mqttMessage);
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }
