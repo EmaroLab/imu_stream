@@ -6,11 +6,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.data.FreezableUtils;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wearable.CapabilityClient;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.NodeClient;
+import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.ArrayList;
@@ -26,13 +33,6 @@ public class DataLayerListenerService extends WearableListenerService {
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         super.onDataChanged(dataEvents);
-
-
-   /*     if (pairedDevices.size() > 0) {
-            for (BluetoothDevice device : pairedDevices) {
-                Log.d("devices", device.getName()+"");
-            }
-        }*/
 
         final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
         for(DataEvent event : events) {
@@ -58,7 +58,6 @@ public class DataLayerListenerService extends WearableListenerService {
                         connected_devices.add(device.getName());
                     }
                 }
-                Log.d("devices", connected_devices +"");
                 intent.putStringArrayListExtra("deviceList", (ArrayList<String>) connected_devices);
                 sendBroadcast(intent);
             }

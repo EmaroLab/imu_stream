@@ -7,25 +7,30 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
-
 import com.emarolab.carfi.helpers.MqttHelper;
-
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
 import java.util.ArrayList;
-import java.util.Timer;
+import java.util.List;
 
 public class PcComunicationActivity extends AppCompatActivity {
-    public TextView AccX, AccY, AccZ, VelX, VelY, VelZ, ipOut, portOut, textConnection;
+    public TextView ipOut, portOut, textConnection;
+    public List<String> devicesName = new ArrayList<String>();
+
+    public TableLayout imu_container;
+    public List<TextView> table_contents = new ArrayList<TextView>();
+
     private Button p1_button;
     private boolean pause_flag = false;
+
     private BroadcastReceiver receiver;
-    private Timer myTimer;
     private MqttHelper mqttHelper;
 
     @Override
@@ -34,6 +39,7 @@ public class PcComunicationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pc_comunication);
 
         p1_button = (Button)findViewById(R.id.buttonPause);
+        imu_container = findViewById(R.id.IMUcontainer);
 
         Intent intent = getIntent();
         String mqtt_ip = intent.getStringExtra(MqttSettingActivity.ip_message);
@@ -46,14 +52,6 @@ public class PcComunicationActivity extends AppCompatActivity {
         ipOut.setText(mqtt_ip);
         portOut.setText(mqtt_port);
         textConnection = (TextView) findViewById(R.id.connectionS);
-
-        AccX = (TextView) findViewById(R.id.accX);
-        AccY = (TextView) findViewById(R.id.accY);
-        AccZ = (TextView) findViewById(R.id.accZ);
-
-        VelX = (TextView) findViewById(R.id.velX);
-        VelY = (TextView) findViewById(R.id.velY);
-        VelZ = (TextView) findViewById(R.id.velZ);
 
         startMqtt(mqtt_ip,mqtt_port,mqtt_user,mqtt_password);
 
@@ -70,9 +68,10 @@ public class PcComunicationActivity extends AppCompatActivity {
                         for (String device : deviceList) {
                             float[] acc = bundle.getFloatArray(device + "/acceleration");
                             float[] vel = bundle.getFloatArray(device + "/velocity");
-                            String string = "acc;" + acc[0] + ";" + acc[1] + ";" + acc[2] + ";gyro;" + vel[0] + ";" + vel[0] + ";" + vel[2];
-                            imuVisualization(acc, vel);
-                            mqttHelper.onDataReceived(string, device);
+                            imuVisualization(device, acc, vel);
+
+                            String imuMsg = "acc;" + acc[0] + ";" + acc[1] + ";" + acc[2] + ";gyro;" + vel[0] + ";" + vel[0] + ";" + vel[2];
+                            mqttHelper.onDataReceived(imuMsg, device);
                         }
                     }
                     connectionCheck();
@@ -94,14 +93,52 @@ public class PcComunicationActivity extends AppCompatActivity {
         }
     }
 
-    private void imuVisualization(float[] acc, float[] vel){
-        AccX.setText(String.valueOf(acc[0]));
-        AccY.setText(String.valueOf(acc[1]));
-        AccZ.setText(String.valueOf(acc[2]));
+    private void addDevice(String device, float[] acc, float[] vel){
+        devicesName.add(device);
 
-        VelX.setText(String.valueOf(vel[0]));
-        VelY.setText(String.valueOf(vel[1]));
-        VelZ.setText(String.valueOf(vel[2]));
+        TextView deviceName = new TextView(this);
+        deviceName.setText(device);
+        deviceName.setPadding(0,0,50,0);
+        TextView AccString = new TextView(this);
+        AccString.setText("Acc: ");
+        TextView deviceAcc = new TextView(this);
+        deviceAcc.setText("" + acc[0] + " " + acc[1] + " " + acc[2]);
+        deviceAcc.setGravity(Gravity.RIGHT);
+        table_contents.add(deviceAcc);
+        TextView VelString = new TextView(this);
+        VelString.setText("Vel: ");
+        TextView deviceGyro = new TextView(this);
+        deviceGyro.setText("" + vel[0] + " " + vel[1] + " " + vel[2]);
+        deviceGyro.setGravity(Gravity.RIGHT);
+        table_contents.add(deviceGyro);
+
+        TableRow tr1 = new TableRow(this);
+        tr1.addView(deviceName);
+        tr1.addView(AccString);
+        tr1.addView(deviceAcc);
+
+        TextView EmptyTextView = new TextView(this);
+
+        TableRow tr2 = new TableRow(this);
+        tr2.addView(EmptyTextView);
+        tr2.addView(VelString);
+        tr2.addView(deviceGyro);
+
+        tr2.setPadding(0, 0,0, 80);
+        imu_container.addView(tr1);
+        imu_container.addView(tr2);
+    }
+    private void imuVisualization(String device, float[] acc, float[] vel){
+        int id = devicesName.indexOf(device);
+
+        if (id == -1){
+            addDevice(device, acc, vel);
+        }else{
+            TextView deviceAcc = table_contents.get(2*id);
+            TextView deviceGyro = table_contents.get(2*id+1);
+            deviceAcc.setText("" + acc[0] + " " + acc[1] + " " + acc[2]);
+            deviceGyro.setText("" + vel[0] + " " + vel[1] + " " + vel[2]);
+        }
     }
 
     @Override

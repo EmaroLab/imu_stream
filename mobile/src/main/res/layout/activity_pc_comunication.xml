@@ -45,14 +45,16 @@
         android:id="@+id/buttonPause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:onClick="pause"
         android:text="Pause"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
     <TextView
         android:id="@+id/textView5"
@@ -83,80 +85,49 @@
         app:layout_constraintStart_toStartOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="299dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:text="Acc:"
-        app:layout_constraintBottom_toTopOf="@+id/buttonPause"
-        app:layout_constraintEnd_toStartOf="@+id/accX"
-        app:layout_constraintTop_toBottomOf="@+id/portSending" />
+        android:layout_weight="1"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498">
 
-    <TextView
-        android:id="@+id/accX"
-        android:layout_width="50dip"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="00.000"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
-        app:layout_constraintEnd_toStartOf="@+id/accY" />
+        <TableLayout
+            android:id="@+id/IMUcontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/accY"
-        android:layout_width="50dip"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="00.000"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/accZ"
-        android:layout_width="50dip"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="00.000"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
-        app:layout_constraintStart_toEndOf="@+id/accY" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Vel:"
-        app:layout_constraintStart_toStartOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/velX"
-        android:layout_width="50dip"
-        android:layout_height="wrap_content"
-        android:text="00.000"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
-        app:layout_constraintStart_toStartOf="@+id/accX" />
-
-    <TextView
-        android:id="@+id/velY"
-        android:layout_width="50dip"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="00.000"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
-        app:layout_constraintStart_toEndOf="@+id/velX" />
-
-    <TextView
-        android:id="@+id/velZ"
-        android:layout_width="50dip"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="00.000"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
-        app:layout_constraintStart_toEndOf="@+id/velY" />
-
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </TableLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
