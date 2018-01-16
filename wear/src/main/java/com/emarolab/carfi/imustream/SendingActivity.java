@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.view.View;
 import android.widget.TextView;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -41,8 +40,6 @@ public class SendingActivity extends WearableActivity implements SensorEventList
     private int period = 20;
 
     private boolean sensorUpdate = true;
-
-    private String msg_intertial;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -118,7 +115,6 @@ public class SendingActivity extends WearableActivity implements SensorEventList
      private void syncSampleDataItem(final vectorMessage msg_acc, final vectorMessage msg_gyro) {
         if (mGoogleApiClient == null)
             return;
-
         final PutDataMapRequest putRequest = PutDataMapRequest.create("/IMU");
         final DataMap map = putRequest.getDataMap();
 
@@ -130,8 +126,6 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         Wearable.DataApi.putDataItem(mGoogleApiClient, request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
             @Override
             public void onResult(DataApi.DataItemResult dataItemResult) {
-                //Log.d("sending", " Sending was successful: " + dataItemResult.getStatus()
-                //        .isSuccess());
                 sensorUpdate = true;
             }
         });
