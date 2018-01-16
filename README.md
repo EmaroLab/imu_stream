@@ -33,7 +33,8 @@ There exist different approaches to install the app into your smartwatch, we des
 1. Press **start**;
 1. Press **pause** and **resume** to pause and resume the communication with the MQTT broker.
 
-
+**NOTE**
+1. If the comunication between the devices does not work, check _Google Play services_ version on the smartwatch. It should be higher then _11.9.51_
 ## Author 
 
 [Alessandro Carfì](https://github.com/ACarfi) e-mail: alessandro.carfi@dibris.unige.it
