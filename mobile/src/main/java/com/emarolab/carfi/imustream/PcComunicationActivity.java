@@ -51,7 +51,7 @@ public class PcComunicationActivity extends AppCompatActivity {
         portOut = (TextView) findViewById(R.id.portSending);
         ipOut.setText(mqtt_ip);
         portOut.setText(mqtt_port);
-        textConnection = (TextView) findViewById(R.id.connectionS);
+        textConnection = (TextView) findViewById(R.id.connectionStatus);
 
         startMqtt(mqtt_ip,mqtt_port,mqtt_user,mqtt_password);
 
