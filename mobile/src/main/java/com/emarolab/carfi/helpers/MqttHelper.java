@@ -18,9 +18,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 
-/**
- * Created by Alessandro on 06/12/2017.
- */
 
 public class MqttHelper {
     public MqttAndroidClient mqttAndroidClient;
@@ -31,7 +28,7 @@ public class MqttHelper {
 
     private String serverUri;
     final String clientId = "IMUAndroidClient";
-    final String subscriptionTopic = "sensors/+";
+    final String subscriptionTopic = "vibration/vel";
 
     private String username;
     private String password;
@@ -87,14 +84,14 @@ public class MqttHelper {
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-
+                    Log.w("Mqtt", "Success " + serverUri );
                     DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
                     disconnectedBufferOptions.setBufferEnabled(true);
                     disconnectedBufferOptions.setBufferSize(1);
                     disconnectedBufferOptions.setPersistBuffer(false);
                     disconnectedBufferOptions.setDeleteOldestMessages(false);
                     //mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
-
+                    subscribeToTopic();
                     Publisher = new MqttPublisher(mqttAndroidClient, cont);
                     pool.execute(Publisher);
                     setPublishPermission(true);
@@ -102,6 +99,7 @@ public class MqttHelper {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Log.w("Mqtt", "Failed to connect to: " + serverUri + exception.toString());
                 }
             });
 
@@ -131,9 +129,9 @@ public class MqttHelper {
     }
 
 
-    public void onDataReceived(String msg) {
+    public void onDataReceived(String msg, String topic) {
         if(publishPermission) {
-            Publisher.setMsg(msg);
+            Publisher.setMsg(msg,topic);
         }
     }
 
