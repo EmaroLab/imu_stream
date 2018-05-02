@@ -11,10 +11,11 @@ public class MqttPublisher implements Runnable {
     private MqttAndroidClient mqttAndroidClient;
     private String msg = "casa";
     private boolean published = false;
-
-    public void setMsg(final String msg) {
+    private String topic;
+    public void setMsg(final String msg, final String topic) {
         this.msg = msg;
         published = true;
+        this.topic = topic;
     }
 
     private Context context;
@@ -37,7 +38,11 @@ public class MqttPublisher implements Runnable {
                 mqttMessage.setPayload(m.getBytes());
 
                 try {
-                    mqttAndroidClient.publish("sensors/imu", mqttMessage);
+                    if(topic.equals("sensors/imu")) {
+                        mqttAndroidClient.publish("sensors/imu", mqttMessage);
+                    } else if(topic.equals("vibration/vel")){
+                        mqttAndroidClient.publish("vibration/vel", mqttMessage);
+                    }
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }

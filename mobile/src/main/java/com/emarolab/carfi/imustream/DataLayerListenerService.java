@@ -2,6 +2,8 @@ package com.emarolab.carfi.imustream;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.google.android.gms.common.data.FreezableUtils;
 import com.google.android.gms.wearable.DataEvent;
@@ -29,16 +31,27 @@ public class DataLayerListenerService extends WearableListenerService {
             if("/IMU".equals(path)) {
                 final DataMap map = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
 
-
                 float[] acc = map.getFloatArray("sensors/accelerometer");
                 float[] gyro = map.getFloatArray("sensors/gyroscope");
                 long time = map.getLong("sensors/time");
 
                 Intent intent = new Intent();
                 intent.setAction("com.example.Broadcast");
+                intent.putExtra("topic", "sensors/imu");
                 intent.putExtra("acceleration", acc);
                 intent.putExtra("velocity", gyro);
                 sendBroadcast(intent);
+            } else if("/VELVIB".equals(path)) {
+                final DataMap map = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
+                String velState = map.getString("velState");
+                long time = map.getLong("time");
+                Log.e("Velocità",String.valueOf(velState));
+                Intent in = new Intent();
+                in.putExtra("topic", "vibration/vel");
+                in.putExtra("velState",velState);
+                in.putExtra("time",time);
+                in.setAction("Vel");
+                sendBroadcast(in);
             }
         }
     }

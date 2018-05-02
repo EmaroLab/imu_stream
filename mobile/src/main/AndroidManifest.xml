@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -28,6 +29,15 @@
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/IMU"/>
+                <!-- <action android:name="com.google.android.gms.wearable.BIND_LISTENER" /> -->
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/VELVIB"
+                    android:scheme="wear" />
                 <!-- <action android:name="com.google.android.gms.wearable.BIND_LISTENER" /> -->
             </intent-filter>
         </service>
