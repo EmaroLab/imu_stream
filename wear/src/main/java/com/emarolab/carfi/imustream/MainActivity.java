@@ -3,12 +3,9 @@ package com.emarolab.carfi.imustream;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -22,7 +19,7 @@ public class MainActivity extends WearableActivity {
         setContentView(R.layout.activity_main);
 
         TextView TextDevName;
-        TextDevName = (TextView) findViewById(R.id.deviceName);
+        TextDevName = findViewById(R.id.deviceName);
 
         BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
         deviceName = myDevice.getName();

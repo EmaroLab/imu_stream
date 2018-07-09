@@ -23,8 +23,6 @@ import java.util.Vector;
 
 public class SendingActivity extends WearableActivity implements SensorEventListener {
 
-
-
     private float[] last_acc = new float[3], last_gyro = new float[3];
     private long last_acc_time = 0;
     private long last_gyro_time = 0;
@@ -141,7 +139,6 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
         if(gyroFlag) {
             long[] temp = convertLong(gyroMsg.getTimestamp());
-
             if (temp.length > 0) {
                 map.putFloatArray(gyroMsg.getTopic(), convertFloat(gyroMsg.getData()));
                 map.putLongArray(gyroMsg.getTopicTime(), convertLong(gyroMsg.getTimestamp()));
@@ -161,9 +158,14 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         }
     }
 
+    /** Function triggered when new sensors data should be processed
+     */
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         Sensor mySensor = sensorEvent.sensor;
+        /** If the new data is from the gyroscope display it and push it in the gyroscope data
+         *  container (gyroMsg)
+         */
         if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
             last_gyro[0] = ((int) (sensorEvent.values[0] * precision)) / precision;
             last_gyro[1] = ((int) (sensorEvent.values[1] * precision)) / precision;
@@ -175,6 +177,9 @@ public class SendingActivity extends WearableActivity implements SensorEventList
             gyroFlag = gyroMsg.push(last_gyro, last_gyro_time);
         }
 
+        /** If the new data is from the accelerometer display it and push it in the accelerometer
+         *  data container (gyroAcc)
+         */
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             last_acc[0] = ((int) (sensorEvent.values[0] * precision)) / precision;
             last_acc[1] = ((int) (sensorEvent.values[1] * precision)) / precision;

@@ -1,3 +1,8 @@
 <resources>
     <string name="hello_world">Hello Round World!</string>
+    <string name="device_name">Device Name</string>
+    <string name="sending_button">SEND</string>
+    <string name="stop_button">STOP</string>
+    <string name="acceleration">acc:</string>
+    <string name="velocity">gyro:</string>
 </resources>

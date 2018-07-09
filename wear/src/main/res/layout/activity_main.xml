@@ -20,7 +20,7 @@
             android:id="@+id/deviceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@string/device_name"
             android:textAlignment="center" />
 
         <Button
@@ -32,7 +32,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginTop="80dp"
             android:onClick="startStreaming"
-            android:text="Send" />
+            android:text="@string/sending_button" />
 
     </FrameLayout>
 </android.support.wear.widget.BoxInsetLayout>

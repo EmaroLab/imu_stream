@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="60dp"
-            android:text="gyro:" />
+            android:text="@string/velocity" />
 
         <TextView
             android:id="@+id/acc"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            android:text="acc:" />
+            android:text="@string/acceleration" />
 
         <Button
             android:id="@+id/button3"
@@ -40,13 +40,13 @@
             android:layout_marginRight="30dp"
             android:layout_marginTop="100dp"
             android:onClick="stopStreaming"
-            android:text="Stop" />
+            android:text="@string/stop_button" />
 
         <TextView
             android:id="@+id/deviceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@string/device_name"
             android:textAlignment="center" />
     </FrameLayout>
 </android.support.wear.widget.BoxInsetLayout>
