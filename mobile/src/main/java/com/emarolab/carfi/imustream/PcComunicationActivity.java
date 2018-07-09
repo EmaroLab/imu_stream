@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +33,11 @@ public class PcComunicationActivity extends AppCompatActivity {
 
     private BroadcastReceiver receiver;
     private MqttHelper mqttHelper;
+
+    private String lastGyro = "";
+    private String lastAcc = "";
+
+    private int lastPkgSizeAcc, lastPkgSizeGyro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +74,55 @@ public class PcComunicationActivity extends AppCompatActivity {
                         for (String device : deviceList) {
                             float[] acc = bundle.getFloatArray(device + "/acceleration");
                             float[] vel = bundle.getFloatArray(device + "/velocity");
+                            long[] accTimestamp = bundle.getLongArray(device + "/time_acceleration");
+                            long[] velTimestamp = bundle.getLongArray(device + "/time_velocity");
+
                             imuVisualization(device, acc, vel);
 
-                            String imuMsg = "acc;" + acc[0] + ";" + acc[1] + ";" + acc[2] + ";gyro;" + vel[0] + ";" + vel[0] + ";" + vel[2];
-                            mqttHelper.onDataReceived(imuMsg, device);
+                            int pkgSizeAcc;
+                            int pkgSizeGyro;
+
+                            String gyroMsg = "";
+                            String accMsg = "";
+
+                            if (vel != null) {
+                                gyroMsg = gyroMsg + "g;";
+                                for (float velo : vel) {
+                                    gyroMsg = gyroMsg + velo + ";";
+                                }
+                                for (long timestamp : velTimestamp) {
+                                    gyroMsg = gyroMsg + timestamp + ";";
+                                }
+                                pkgSizeGyro = velTimestamp.length;
+                                lastPkgSizeGyro = pkgSizeGyro;
+                                lastGyro = gyroMsg;
+                            }else {
+                                pkgSizeGyro = lastPkgSizeGyro;
+                                gyroMsg = lastGyro;
+                            }
+
+
+                            if (acc != null) {
+                                accMsg = accMsg + "a;";
+                                for (float accel : acc) {
+                                    accMsg = accMsg + accel + ";";
+                                }
+                                for (long timestamp : accTimestamp) {
+                                    accMsg = accMsg + timestamp + ";";
+                                }
+                                pkgSizeAcc = accTimestamp.length;
+                                lastPkgSizeAcc = pkgSizeAcc;
+                                lastAcc = accMsg;
+                            } else {
+                                pkgSizeAcc = lastPkgSizeAcc;
+                                accMsg = lastAcc;
+                            }
+
+                            if (acc != null || vel != null) {
+                                String imuMsg = pkgSizeAcc + ";" + accMsg + pkgSizeGyro + ";" + gyroMsg;
+                                Log.d("mqtt", imuMsg);
+                                mqttHelper.onDataReceived(imuMsg, device);
+                            }
                         }
                     }
                     connectionCheck();
@@ -102,13 +153,17 @@ public class PcComunicationActivity extends AppCompatActivity {
         TextView AccString = new TextView(this);
         AccString.setText("Acc: ");
         TextView deviceAcc = new TextView(this);
-        deviceAcc.setText("" + acc[0] + " " + acc[1] + " " + acc[2]);
+        if (acc != null) {
+            deviceAcc.setText("" + acc[0] + " " + acc[1] + " " + acc[2]);
+        }
         deviceAcc.setGravity(Gravity.RIGHT);
         table_contents.add(deviceAcc);
         TextView VelString = new TextView(this);
         VelString.setText("Vel: ");
         TextView deviceGyro = new TextView(this);
-        deviceGyro.setText("" + vel[0] + " " + vel[1] + " " + vel[2]);
+        if (vel != null) {
+            deviceGyro.setText("" + vel[0] + " " + vel[1] + " " + vel[2]);
+        }
         deviceGyro.setGravity(Gravity.RIGHT);
         table_contents.add(deviceGyro);
 
@@ -136,8 +191,13 @@ public class PcComunicationActivity extends AppCompatActivity {
         }else{
             TextView deviceAcc = table_contents.get(2*id);
             TextView deviceGyro = table_contents.get(2*id+1);
-            deviceAcc.setText("" + acc[0] + " " + acc[1] + " " + acc[2]);
-            deviceGyro.setText("" + vel[0] + " " + vel[1] + " " + vel[2]);
+            if (acc != null) {
+                deviceAcc.setText("" + acc[0] + " " + acc[1] + " " + acc[2]);
+            }
+
+            if (vel != null) {
+                deviceGyro.setText("" + vel[0] + " " + vel[1] + " " + vel[2]);
+            }
         }
     }
 
