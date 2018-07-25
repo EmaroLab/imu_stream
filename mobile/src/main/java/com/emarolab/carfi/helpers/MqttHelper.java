@@ -30,7 +30,7 @@ public class MqttHelper {
     private boolean publishPermission = false;
 
     private String serverUri;
-    final String clientId = "IMUAndroidClient";
+    final String clientId = "IMUAndroidClient_P2";
     final String subscriptionTopic = "sensors/+";
 
     private String username;
