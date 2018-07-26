@@ -51,8 +51,11 @@ public class DataLayerListenerService extends WearableListenerService {
                 for (BluetoothDevice device : pairedDevices) {
                     float[] acc = map.getFloatArray(device.getName()+"/accelerometer");
                     float[] gyro = map.getFloatArray(device.getName()+"/gyroscope");
+                    float[] orient = map.getFloatArray(device.getName()+"/orientation");
+
                     long[] time_acc = map.getLongArray(device.getName()+"/time_accelerometer");
                     long[] time_gyro = map.getLongArray(device.getName()+"/time_gyroscope");
+                    long[] time_orient = map.getLongArray(device.getName()+"/time_orientation");
 
                     if (gyro != null){
                         intent.putExtra(device.getName()+"/velocity", gyro);
@@ -62,6 +65,11 @@ public class DataLayerListenerService extends WearableListenerService {
                     if (acc != null) {
                         intent.putExtra(device.getName()+"/acceleration", acc);
                         intent.putExtra(device.getName()+"/time_acceleration", time_acc);
+                    }
+
+                    if (orient != null) {
+                        intent.putExtra(device.getName()+"/orientation", orient);
+                        intent.putExtra(device.getName()+"/time_orientation", time_orient);
                     }
 
                     connected_devices.add(device.getName());

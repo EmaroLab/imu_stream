@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
@@ -23,15 +24,16 @@ import java.util.Vector;
 
 public class SendingActivity extends WearableActivity implements SensorEventListener {
 
-    private float[] last_acc = new float[3], last_gyro = new float[3];
+    private float[] last_acc = new float[3], last_gyro = new float[3], last_orient = new float[3];
     private long last_acc_time = 0;
     private long last_gyro_time = 0;
+    private long last_orient_time = 0;
 
-    private vectorMessage accMsg, gyroMsg;
+    private vectorMessage accMsg, gyroMsg, orientMsg;
 
     private TextView dataAcc, dataGyro;
     private SensorManager senSensorManager;
-    private Sensor senAccelerometer, senGyroscope;
+    private Sensor senAccelerometer, senGyroscope, senMagnetometer;
 
     private String deviceName;
 
@@ -40,6 +42,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
     private boolean sensorUpdate = true;
     private boolean accFlag = false;
     private boolean gyroFlag = false;
+    private boolean orientFlag = false;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -58,6 +61,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         //Initialize accelerometer and gyroscope data containers
         accMsg = new vectorMessage(1);
         gyroMsg = new vectorMessage(1);
+        orientMsg = new vectorMessage(1);
 
         TextView TextDevName;
         TextDevName = findViewById(R.id.deviceName);
@@ -65,6 +69,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
         accMsg.setTopics((deviceName + "/accelerometer"),(deviceName + "/time_accelerometer"));
         gyroMsg.setTopics((deviceName + "/gyroscope"),(deviceName + "/time_gyroscope"));
+        orientMsg.setTopics((deviceName + "/orientation"),(deviceName + "/time_orientation"));
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -74,6 +79,8 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         senGyroscope = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         senSensorManager.registerListener(this, senGyroscope , SensorManager.SENSOR_DELAY_GAME);
 
+        senMagnetometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        senSensorManager.registerListener(this, senMagnetometer , SensorManager.SENSOR_DELAY_GAME);
 
         dataAcc = findViewById(R.id.acc);
         dataGyro = findViewById(R.id.gyro);
@@ -116,7 +123,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
     private void sender()
     {
-        if (sensorUpdate & accFlag || sensorUpdate & gyroFlag) {
+        if (sensorUpdate & accFlag || sensorUpdate & gyroFlag || sensorUpdate & orientFlag ) {
             sensorUpdate = false;
             syncSampleDataItem();
         }
@@ -146,7 +153,16 @@ public class SendingActivity extends WearableActivity implements SensorEventList
             }
         }
 
-        if(gyroFlag || accFlag) {
+         if(orientFlag) {
+             long[] temp = convertLong(orientMsg.getTimestamp());
+             if (temp.length > 0 ) {
+                 map.putFloatArray(orientMsg.getTopic(), convertFloat(orientMsg.getData()));
+                 map.putLongArray(orientMsg.getTopicTime(), convertLong(orientMsg.getTimestamp()));
+                 orientMsg.flush();
+             }
+         }
+
+        if(gyroFlag || accFlag || orientFlag) {
             PutDataRequest request = putRequest.asPutDataRequest();
             request.setUrgent();
             Wearable.DataApi.putDataItem(mGoogleApiClient, request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
@@ -189,6 +205,16 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
             dataAcc.setText("acc: " + last_acc[0] + " " + last_acc[1] + " " + last_acc[2]);
             accFlag = accMsg.push(last_acc, last_acc_time);
+        }
+
+        if (mySensor.getType() == Sensor.TYPE_ORIENTATION) {
+            last_orient[0] = ((int) (sensorEvent.values[0] * precision)) / precision;
+            last_orient[1] = ((int) (sensorEvent.values[1] * precision)) / precision;
+            last_orient[2] = ((int) (sensorEvent.values[2] * precision)) / precision;
+
+            last_orient_time = System.currentTimeMillis() + (sensorEvent.timestamp - System.nanoTime()) / 1000000L;
+
+            orientFlag = orientMsg.push(last_orient, last_orient_time);
         }
 
         sender();

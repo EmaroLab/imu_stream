@@ -36,8 +36,9 @@ public class PcComunicationActivity extends AppCompatActivity {
 
     private String lastGyro = "";
     private String lastAcc = "";
+    private String lastOrient = "";
 
-    private int lastPkgSizeAcc, lastPkgSizeGyro;
+    private int lastPkgSizeAcc, lastPkgSizeGyro, lastPkgSizeOrient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,16 +75,23 @@ public class PcComunicationActivity extends AppCompatActivity {
                         for (String device : deviceList) {
                             float[] acc = bundle.getFloatArray(device + "/acceleration");
                             float[] vel = bundle.getFloatArray(device + "/velocity");
+                            float[] orient = bundle.getFloatArray(device + "/orientation");
+
                             long[] accTimestamp = bundle.getLongArray(device + "/time_acceleration");
                             long[] velTimestamp = bundle.getLongArray(device + "/time_velocity");
+                            long[] orientTimestamp = bundle.getLongArray(device + "/time_orientation");
+
+
 
                             imuVisualization(device, acc, vel);
 
                             int pkgSizeAcc;
                             int pkgSizeGyro;
+                            int pkgSizeOrient;
 
                             String gyroMsg = "";
                             String accMsg = "";
+                            String orientMsg = "";
 
                             if (vel != null) {
                                 gyroMsg = gyroMsg + "g;";
@@ -118,8 +126,24 @@ public class PcComunicationActivity extends AppCompatActivity {
                                 accMsg = lastAcc;
                             }
 
-                            if (acc != null || vel != null) {
-                                String imuMsg = pkgSizeAcc + ";" + accMsg + pkgSizeGyro + ";" + gyroMsg;
+                            if (orient != null){
+                                orientMsg = orientMsg + "o;";
+                                for (float or : orient) {
+                                    orientMsg = orientMsg + or + ";";
+                                }
+                                for (long timestamp : orientTimestamp) {
+                                    orientMsg = orientMsg + timestamp + ";";
+                                }
+                                pkgSizeOrient = orientTimestamp.length;
+                                lastPkgSizeOrient = pkgSizeOrient;
+                                lastOrient = orientMsg;
+                            } else {
+                                pkgSizeOrient = lastPkgSizeOrient;
+                                orientMsg = lastOrient;
+                            }
+
+                            if (acc != null || vel != null || orient != null) {
+                                String imuMsg = pkgSizeAcc + ";" + accMsg + pkgSizeGyro + ";" + gyroMsg + pkgSizeOrient + ";" + orientMsg;
                                 Log.d("mqtt", imuMsg);
                                 mqttHelper.onDataReceived(imuMsg, device);
                             }
