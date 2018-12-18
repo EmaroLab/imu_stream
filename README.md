@@ -33,6 +33,10 @@ There exist different approaches to install the app into your smartwatch, we des
 1. Press **start**;
 1. Press **pause** and **resume** to pause and resume the communication with the MQTT broker.
 
+## Features
+
+The multiple smartwatches feature have been successfully implemented, therefore the smartphone can handle more smartwatch simultaneously.  Each smartwatch should be paired with the smartphone and should run the __imu stream__ application.
+
 **NOTE**
 1. If the comunication between the devices does not work, check _Google Play services_ version on the smartwatch. It should be higher then _11.9.51_
 ## Author 
