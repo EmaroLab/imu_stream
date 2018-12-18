@@ -1,7 +1,9 @@
 package com.emarolab.carfi.imustream;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,13 +14,10 @@ import android.view.View;
 import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-
 import java.util.Vector;
 
 public class SendingActivity extends WearableActivity implements SensorEventListener {
@@ -26,6 +25,8 @@ public class SendingActivity extends WearableActivity implements SensorEventList
     private float[] last_acc = new float[3], last_gyro = new float[3];
     private long last_acc_time = 0;
     private long last_gyro_time = 0;
+
+    private long[] timestamp_sent = new long[]{0, 0};
 
     private vectorMessage accMsg, gyroMsg;
 
@@ -43,6 +44,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
     private GoogleApiClient mGoogleApiClient;
 
+    private BroadcastReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +55,6 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
         Intent intent = getIntent();
         deviceName = intent.getStringExtra(MainActivity.deviceNamePath);
-
 
         //Initialize accelerometer and gyroscope data containers
         accMsg = new vectorMessage(1);
@@ -96,6 +97,21 @@ public class SendingActivity extends WearableActivity implements SensorEventList
                 .addApi(Wearable.API)
                 .build();
         mGoogleApiClient.connect();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.example.Broadcast");
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle bundle = intent.getExtras();
+                if (bundle != null) {
+                    sensorUpdate = bundle.getBoolean("/received");
+                }
+            }
+        };
+
+        registerReceiver(receiver, filter);
     }
 
     private long[] convertLong(Vector<Long> data) {
@@ -130,6 +146,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
         if(accFlag) {
             long[] temp = convertLong(accMsg.getTimestamp());
+            timestamp_sent[1] = temp[temp.length-1];
             if (temp.length > 0 ) {
                 map.putFloatArray(accMsg.getTopic(), convertFloat(accMsg.getData()));
                 map.putLongArray(accMsg.getTopicTime(), convertLong(accMsg.getTimestamp()));
@@ -139,6 +156,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
 
         if(gyroFlag) {
             long[] temp = convertLong(gyroMsg.getTimestamp());
+            timestamp_sent[0] = temp[temp.length-1];
             if (temp.length > 0) {
                 map.putFloatArray(gyroMsg.getTopic(), convertFloat(gyroMsg.getData()));
                 map.putLongArray(gyroMsg.getTopicTime(), convertLong(gyroMsg.getTimestamp()));
@@ -149,12 +167,7 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         if(gyroFlag || accFlag) {
             PutDataRequest request = putRequest.asPutDataRequest();
             request.setUrgent();
-            Wearable.DataApi.putDataItem(mGoogleApiClient, request).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                @Override
-                public void onResult(DataApi.DataItemResult dataItemResult) {
-                    sensorUpdate = true;
-                }
-            });
+            Wearable.DataApi.putDataItem(mGoogleApiClient, request);
         }
     }
 
@@ -192,6 +205,15 @@ public class SendingActivity extends WearableActivity implements SensorEventList
         }
 
         sender();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+        super.onDestroy();
     }
 
     @Override
