@@ -30,7 +30,7 @@ public class MqttHelper {
     private boolean publishPermission = false;
 
     private String serverUri;
-    final String clientId = "IMUAndroidClient_P2";
+    final String clientId = "IMUAndroidClient";
     final String subscriptionTopic = "sensors/+";
 
     private String username;
@@ -42,7 +42,7 @@ public class MqttHelper {
         password = pwd;
 
         cont = context;
-        mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
+        mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId+"_"+System.currentTimeMillis());
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean b, String s) {
