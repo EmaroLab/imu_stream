@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PcComunicationActivity extends AppCompatActivity {
+
     public TextView ipOut, portOut, textConnection;
     public List<String> devicesName = new ArrayList<String>();
 
@@ -120,7 +120,6 @@ public class PcComunicationActivity extends AppCompatActivity {
 
                             if (acc != null || vel != null) {
                                 String imuMsg = pkgSizeAcc + ";" + accMsg + pkgSizeGyro + ";" + gyroMsg;
-                                Log.d("mqtt", imuMsg);
                                 mqttHelper.onDataReceived(imuMsg, device);
                             }
                         }
